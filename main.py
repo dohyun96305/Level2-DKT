@@ -39,7 +39,6 @@ def main(args) :
     print(f'--------------- {args.model} Train/Valid Split ---------------')
     if args.model in ('tabnet'):
         X_train, y_train, X_valid, y_valid = tabnet_datasplit(args, data)
-        print(f'x_train: {X_train.shape}, y_train: {y_train.shape}, x_valid: {X_valid.shape}, y_valid: {y_valid.shape}')
 
     else : 
         pass    
@@ -47,9 +46,10 @@ def main(args) :
 
     ######################## MODEL LOAD
     print(f'--------------- {args.model} MODEL LOAD---------------')
+
     cat_idxs = [ i for i, f in enumerate(data.columns) if f in categories ]
     cat_dims = [ cat_dims1[i] for i in categories ] 
-    
+
     model = models_load(args, cat_idxs, cat_dims)
     
     
@@ -69,7 +69,6 @@ def main(args) :
     submission.to_csv(filename, index = False)
     print('make csv file !!!', filename)
     
-
 if __name__ == "__main__":
     args = parse_args()
     os.makedirs(name = args.model_dir, exist_ok = True)

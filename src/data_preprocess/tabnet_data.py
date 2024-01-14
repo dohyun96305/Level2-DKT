@@ -21,6 +21,33 @@ def tabnet_preprocess_data(args, df) :
     df['day'] = df['Timestamp'].dt.day.astype('int64')
     df['hour'] = df['Timestamp'].dt.hour.astype('int64')
 
+    # 문제에 따른 정답률
+    assess_groupby_answer = df[df['answerCode'] != -1].groupby(['assessmentItemID']).agg({
+        'assessmentItemID' : 'count',
+        'answerCode' : percentile
+    })
+
+    assess_groupby_answer.columns = ['assess_count', 'assess_answer']
+    df = pd.merge(df, assess_groupby_answer, on=['assessmentItemID'], how='left')
+
+    # test에 따른 정답률 
+    test_groupby_answer = df[df['answerCode'] != -1].groupby(['testId']).agg({
+        'testId' : 'count',
+        'answerCode' : percentile
+    })
+
+    test_groupby_answer.columns = ['test_count', 'test_answer']
+    df = pd.merge(df, test_groupby_answer, on=['testId'], how='left')
+
+    # tag에 따른 정답률
+    tag_groupby_answer = df[df['answerCode'] != -1].groupby(['KnowledgeTag']).agg({
+        'KnowledgeTag' : 'count',
+        'answerCode' : percentile
+    })
+
+    tag_groupby_answer.columns = ['tag_count', 'tag_answer']
+    df = pd.merge(df, tag_groupby_answer, on=['KnowledgeTag'], how='left')
+
     # 유저, 태그에 따른 문제 정답률 (tag_answer_precentile)
     user_tag_groupby_answer = df[df['answerCode'] != -1].groupby(['userID', 'KnowledgeTag']).agg({
         'KnowledgeTag' : 'count',
@@ -28,35 +55,24 @@ def tabnet_preprocess_data(args, df) :
     })
 
     user_tag_groupby_answer.columns = ['user_tag_count', 'user_tag_answer']
-    
+
     df = pd.merge(df, user_tag_groupby_answer, on=['userID', 'KnowledgeTag'], how='left')
 
-    df.loc[df['user_tag_count'].isna() == True, 'user_tag_count'] = 0
-    df.loc[df['user_tag_answer'].isna() == True, 'user_tag_answer'] = 0  
-          
-    # 유저가 문제를 풀 때 걸린 시간 (elapsed)
-    diff = df.loc[:, ['userID', 'Timestamp']].groupby('userID').diff().fillna(pd.Timedelta(seconds=0))
-    diff = diff.fillna(pd.Timedelta(seconds=0))
-    diff = diff['Timestamp'].apply(lambda x: x.total_seconds())
-
-    new_diff = diff[1:].reset_index(drop = True)
-    new_diff[(len(df)-1)] = 0.0
-
-    df['elapsed'] = new_diff
+    df['user_tag_answer'] = df['user_tag_answer'].fillna(0.5)
+    df['user_tag_count'] = df['user_tag_count'].fillna(0.0)
+        
 
     # 유저, 시험지에 따른 평균 정답률 (test_answer_percentile)
     user_test_groupby_answer = df[df['answerCode'] != -1].groupby(['userID', 'testId']).agg({
         'testId' : 'count',
         'answerCode' : percentile,
-        'elapsed' : mean1
     })
 
-    user_test_groupby_answer.columns = ['user_test_count', 'user_test_answer', 'user_test_time']
+    user_test_groupby_answer.columns = ['user_test_count', 'user_test_answer']
 
     df = pd.merge(df, user_test_groupby_answer, on=['userID', 'testId'], how='left')
-    df.loc[df.groupby(['userID', 'testId']).tail(1).index, 'elapsed'] = df['user_test_time']
-
-    df = df.drop(['Timestamp', 'user_test_time'], axis = 1)
+ 
+    df = df.drop(['Timestamp'], axis = 1)
     
     col = df.columns.tolist()
     new_col = col[:3] + col[4:] + [col[3]]

@@ -8,7 +8,7 @@ def tabnet(args, cat_idxs, cat_dims) :
 
     return TabNetClassifier(cat_idxs = cat_idxs, 
                             cat_dims = cat_dims,
-                            cat_emb_dim = 10, 
+                            cat_emb_dim = args.cat_emb_dim, 
                             seed = args.seed,
                             optimizer_fn = torch.optim.Adam,
                             optimizer_params = {"lr" : 1e-2},

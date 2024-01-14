@@ -56,14 +56,14 @@ def main(args) :
     ######################## TRAIN
     print(f'--------------- {args.model} TRAINING ---------------')
     
-    model = train(args, model, X_train, y_train, X_valid, y_valid)
+    model, auc, acc = train(args, model, X_train, y_train, X_valid, y_valid)
 
 
     ######################## INFERENCE
     print(f'--------------- {args.model} PREDICT ---------------')
-    predicts = test(args, model, data)
+    predicts = test(model, data)
 
-    filename = setting.get_submit_filename(args)
+    filename = setting.get_submit_filename(args, auc, acc)
     submission = pd.read_csv(args.data_dir + "sample_submission.csv")
     submission['prediction'] = predicts
     submission.to_csv(filename, index = False)

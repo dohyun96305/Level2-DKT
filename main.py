@@ -63,7 +63,7 @@ def main(args) :
     print(f'--------------- {args.model} PREDICT ---------------')
     predicts = test(model, data)
 
-    filename = setting.get_submit_filename(args. auc, acc)
+    filename = setting.get_submit_filename(args, auc, acc)
     submission = pd.read_csv(args.data_dir + "sample_submission.csv")
     submission['prediction'] = predicts
     submission.to_csv(filename, index = False)

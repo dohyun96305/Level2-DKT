@@ -1,4 +1,4 @@
-
+from sklearn.metrics import accuracy_score, roc_auc_score
 
 def train(args, model, X_train, y_train, X_valid, y_valid) : 
 
@@ -16,9 +16,12 @@ def train(args, model, X_train, y_train, X_valid, y_valid) :
         drop_last = False,
     )
 
-    return model
+    auc = roc_auc_score(y_valid, model.predict_proba(X_valid)[:, -1])
+    acc = accuracy_score(y_valid, model.predict(X_valid))
 
-def test(args, model, df) : 
+    return model, auc, acc
+
+def test(model, df) : 
 
     X_test = df[df['answerCode'] == -1].drop(['answerCode'], axis = 1).values
     pred = model.predict_proba(X_test)[:,-1]

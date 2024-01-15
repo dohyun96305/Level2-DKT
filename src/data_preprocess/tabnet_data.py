@@ -21,6 +21,26 @@ def tabnet_preprocess_data(args, df) :
     df['day'] = df['Timestamp'].dt.day.astype('int64')
     df['hour'] = df['Timestamp'].dt.hour.astype('int64')
 
+    # 문제, 시험지 대분류 
+    df['Bcategory'] = df['assessmentItemID'].apply(lambda x : x[2])
+
+    Bcategory_groupby_answer = df[df['answerCode'] != -1].groupby(['Bcategory']).agg({
+        'Bcategory' : 'count',
+        'answerCode' : percentile
+    })
+
+    Bcategory_groupby_answer.columns = ['category_count', 'category_answer']
+    df = pd.merge(df, Bcategory_groupby_answer, on=['Bcategory'], how='left')
+
+    # user가 푼 시간대에 따른 count, 정답률
+    hour_groupby_answer =  df[df['answerCode'] != -1].groupby(['hour']).agg({
+        'hour' : 'count',
+        'answerCode' : percentile
+    })
+
+    hour_groupby_answer.columns = ['hour_count', 'hour_answer']
+    df = pd.merge(df, hour_groupby_answer, on=['hour'], how='left')
+
     # 문제에 따른 정답률
     assess_groupby_answer = df[df['answerCode'] != -1].groupby(['assessmentItemID']).agg({
         'assessmentItemID' : 'count',
@@ -78,7 +98,7 @@ def tabnet_preprocess_data(args, df) :
     new_col = col[:3] + col[4:] + [col[3]]
     df = df[new_col]
 
-    categories = ['userID', 'assessmentItemID', 'testId', 'KnowledgeTag', 'month', 'day', 'hour']    
+    categories = ['userID', 'assessmentItemID', 'testId', 'KnowledgeTag', 'month', 'day', 'hour', 'Bcategory']    
     cat_dims1 = {}
 
     for col in df.columns :

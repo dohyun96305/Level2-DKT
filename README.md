@@ -8,7 +8,7 @@
 - 최종적으로 public / private 에서 모두 3등을 기록하며 Public AUC기준 0.8255를 달성하였다.
 
 ## Introduction
-<img width="500" alt="Introduce" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/3f89f50e-f536-442b-8656-7cb165bcd088">
+<img width="700" alt="Introduce" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/3f89f50e-f536-442b-8656-7cb165bcd088">
 
 - DKT는 Deep Knowledge Tracing의 약자로 우리의 "지식 상태"를 추적하는 딥러닝 방법론  
 - 시험에 대해 과목을 얼마만큼 이해하고 있는지 측정 및 활용하여 아직 풀지 않은 미래의 문제에 대한 정답 여부를 확인할 수 있다.  
@@ -62,7 +62,7 @@
     - test data 전체 372, 정답 맞춘 사람 176명 public acc:0.4731
     - train set에 0과1 비율을 872368:826794, 즉 1 비율이 0.4865로 조정
 
-<img width="500" alt="EDA_1" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/4244110e-400b-41b9-b93b-0bcc53ad4757">
+<img width="700" alt="EDA_1" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/4244110e-400b-41b9-b93b-0bcc53ad4757">
  
     
 - Users Feature Engineering
@@ -110,9 +110,11 @@
     - Ensemble을 통해 전반적으로 Public Score가 상승하였으며 단일 모델보다 Public Score가 떨어진 경우에도 Private Score가 상승하는 것을 대회 종료 후 확인할 수 있었음.
  
 **public : 0.8255**
-<img width="500" alt="Score_public" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/f2df3094-dadd-4e49-886f-b3b51ad0dd91">
+
+<img width="700" alt="Score_public" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/f2df3094-dadd-4e49-886f-b3b51ad0dd91"> <br/><br/>
 
 
 **private : 0.8523**
-<img width="500" alt="Score_private" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/18fff6d1-2f7e-4dc3-aeac-d73556372014">
+
+<img width="700" alt="Score_private" src="https://github.com/dohyun96305/Level2-DKT/assets/75681704/18fff6d1-2f7e-4dc3-aeac-d73556372014">
 
